@@ -1,0 +1,448 @@
+PRG 1: Recognize String under 'a', 'a*b+', 'abb'
+
+#include<stdio.h>
+#include<string.h>
+
+int main(){
+    char str[100];
+    int i=0;
+
+    printf("Enter a String:");
+    scanf("%s",str);
+
+    if(strcmp(str,"a")==0){
+        printf("String matches pattern'a'");
+        return 0;
+    }
+
+    if(strcmp(str,"abb")==0){
+        printf("String matches pattern 'abb'\n");
+        return 0;
+    }
+
+    i=0;
+    while(str[i]=='a'){
+        i++;
+    }
+
+    int bcount=0;
+
+    while(str[i]=='b'){
+        bcount++;
+        i++;
+    }
+
+    if(bcount>0 && str[i]=='\0')
+        printf("String matches pattern 'a*b+'\n");
+    else
+        printf("String does not match any pattern \n");
+
+    return 0;
+}
+
+
+PRG 2: Convert NFA to DFA
+
+#include <stdio.h>
+#include<string.h>
+
+#define MAX 10
+
+int n;
+int i,j,sym;
+int t[MAX][MAX][MAX];
+int dfastates[MAX][MAX];
+int dfacount=0;
+int visited[MAX];
+
+void adddfastate(int set[]){
+    for(i=0;i<dfacount;i++){
+        int same=1;
+
+        for(j=0;j<n;j++){
+            if(dfastates[i][j]!=set[j]){
+                same=0;
+                break;
+            }
+        }
+
+        if(same) return;
+    }
+
+    for(j=0;j<n;j++){
+        dfastates[dfacount][j]=set[j];
+    }
+
+    dfacount++;
+}
+
+void printset(int set[]){
+    printf("{");
+
+    for(i=0;i<n;i++){
+        if(set[i]) printf("q%d",i);
+    }
+
+    printf("}");
+}
+
+void nfatodfa(int start){
+    int q[MAX][MAX];
+    int front=0,rear=0;
+    int startset[MAX]={0};
+
+    startset[start]=1;
+
+    memcpy(q[rear++],startset,sizeof(startset));
+    adddfastate(startset);
+
+    printf("\nDFA states:\n");
+
+    while(front<rear){
+        int current[MAX];
+
+        memcpy(current,q[front++],sizeof(current));
+
+        printf("\n State");
+        printset(current);
+        printf("->");
+
+        for(sym=0;sym<2;sym++){
+            int newset[MAX]={0};
+
+            for(i=0;i<n;i++){
+                if(current[i]){
+                    for(j=0;j<n;j++){
+                        if(t[i][sym][j]){
+                            newset[j]=1;
+                        }
+                    }
+                }
+            }
+
+            printf("\n on input %c->",sym==0?'a':'b');
+            printset(newset);
+
+            adddfastate(newset);
+
+            int exists=0;
+
+            for(i=0;i<rear;i++){
+                if(memcmp(q[i],newset,sizeof(newset))==0){
+                    exists=1;
+                    break;
+                }
+            }
+
+            if(!exists){
+                memcpy(q[rear++],newset,sizeof(newset));
+            }
+        }
+    }
+}
+
+int main(){
+    int start;
+
+    printf("Enter number of nfa states:");
+    scanf("%d",&n);
+
+    printf("\nEnter nfa transition table(0/1) for a and b");
+
+    for(i=0;i<n;i++){
+        for(sym=0;sym<2;sym++){
+            for(j=0;j<n;j++){
+                scanf("%d",&t[i][sym][j]);
+            }
+        }
+    }
+
+    printf("\nEnter start state:");
+    scanf("%d",&start);
+
+    nfatodfa(start);
+
+    return 0;
+}
+
+
+PRG 3: Convert Regular Expression into NFA
+
+#include<stdio.h>
+#include<string.h>
+
+#define MAX 100
+
+int state=0;
+
+typedef struct{
+    int start;
+    int end;
+} NFA;
+
+void printTrans(int s,char c,int d){
+    if(c=='e')
+        printf("q%d--e-->q%d\n",s,d);
+    else
+        printf("q%d--%c-->q%d\n",s,c,d);
+}
+
+NFA createBasic(char c){
+    NFA n;
+
+    n.start=state++;
+    n.end=state++;
+
+    printTrans(n.start,c,n.end);
+
+    return n;
+}
+
+NFA concatenate(NFA a,NFA b){
+    printTrans(a.end,'e',b.start);
+
+    NFA n;
+
+    n.start=a.start;
+    n.end=b.end;
+
+    return n;
+}
+
+NFA unionNFA(NFA a,NFA b){
+    NFA n;
+
+    n.start=state++;
+    n.end=state++;
+
+    printTrans(n.start,'e',a.start);
+    printTrans(n.start,'e',b.start);
+    printTrans(a.end,'e',n.end);
+    printTrans(b.end,'e',n.end);
+
+    return n;
+}
+
+NFA kleene(NFA a){
+    NFA n;
+
+    n.start=state++;
+    n.end=state++;
+
+    printTrans(n.start,'e',a.start);
+    printTrans(n.start,'e',n.end);
+    printTrans(a.end,'e',a.start);
+    printTrans(a.end,'e',n.end);
+
+    return n;
+}
+
+int main(){
+    char regex[MAX];
+    NFA stack[MAX];
+    int top=-1;
+
+    printf("Enter simple regex(example:a/b*):");
+    scanf("%s",regex);
+
+    int i;
+
+    for(i=0;i<strlen(regex);i++){
+        char c=regex[i];
+
+        if(c=='a'||c=='b'){
+            stack[++top]=createBasic(c);
+        }
+        else if(c=='*'){
+            stack[top]=kleene(stack[top]);
+        }
+        else if(c=='|'){
+            NFA b=stack[top--];
+            NFA a=stack[top--];
+
+            stack[++top]=unionNFA(a,b);
+        }
+    }
+
+    printf("\nStart state:q%d\n",stack[top].start);
+    printf("Final state:q%d\n",stack[top].end);
+
+    return 0;
+}
+
+
+PRG 4: Lexical Analyser to Ignore Redundant Spaces, Tabs, Newlines and Comments
+
+#include <stdio.h>
+
+int main()
+{
+    FILE *fp;
+    char ch,next;
+
+    fp=fopen("input.txt","r");
+
+    if(fp==NULL){
+        printf("Cannot open file\n");
+        return 1;
+    }
+
+    printf("Source code after removing spaces, tabs, newlines & comments:\n");
+
+    while((ch=fgetc(fp))!=EOF){
+
+        if(ch==' ' || ch=='\t' || ch=='\n')
+            continue;
+
+        if(ch=='\\'){
+            next=fgetc(fp);
+
+            if(next=='\n')
+                continue;
+        }
+
+        putchar(ch);
+    }
+
+    fclose(fp);
+
+    return 0;
+}
+
+
+PRG 5: Construct a Predictive Parser
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char stack[100];
+int top=-1;
+
+void push(char c){
+    stack[++top]=c;
+}
+
+char pop(){
+    if(top==-1)
+        return '\0';
+
+    return stack[top--];
+}
+
+char peek(){
+    if(top==-1)
+        return '\0';
+
+    return stack[top];
+}
+
+void printStack(){
+    for(int i=0;i<=top;i++){
+        printf("%c",stack[i]);
+    }
+}
+
+int getRowIndex(char c){
+    if(c=='S')
+        return 0;
+
+    if(c=='B')
+        return 1;
+
+    return -1;
+}
+
+int getColIndex(char c){
+    if(c=='a')
+        return 0;
+
+    if(c=='b')
+        return 1;
+
+    if(c=='$')
+        return 2;
+
+    return -1;
+}
+
+int main(){
+
+    char table[2][3][10]={
+        {"aBa","",""},
+        {"","bB","#"}
+    };
+
+    char input[100];
+
+    printf("Enter the input string (end with $): ");
+    scanf("%s",input);
+
+    push('$');
+    push('S');
+
+    int ip=0;
+
+    printf("\n%-20s %-20s %-20s\n","Stack","Input Buffer","Action");
+    printf("------------------------------------------------------------\n");
+
+    while(peek()!='$'){
+
+        printStack();
+        printf("\t\t\t");
+        printf("%s",input+ip);
+        printf("\t\t\t");
+
+        char X=peek();
+        char a=input[ip];
+
+        if(X==a){
+            printf("Match %c\n",a);
+            pop();
+            ip++;
+        }
+
+        else if(X>='a' && X<='z'){
+            printf("\nSyntax Error: Terminal mismatch! Expected %c but found %c\n",X,a);
+            return 1;
+        }
+
+        else{
+            int r=getRowIndex(X);
+            int c=getColIndex(a);
+
+            if(r==-1 || c==-1 || strlen(table[r][c])==0){
+                printf("\nSyntax Error: No parsing table entry for [%c, %c]\n",X,a);
+                return 1;
+            }
+
+            char *prod=table[r][c];
+
+            printf("%c -> %s\n",X,prod);
+
+            pop();
+
+            if(strcmp(prod,"#")!=0){
+                for(int i=strlen(prod)-1;i>=0;i--){
+                    push(prod[i]);
+                }
+            }
+        }
+    }
+
+    printStack();
+    printf("\t\t\t");
+    printf("%s",input+ip);
+    printf("\t\t\t");
+
+    if(peek()=='$' && input[ip]=='$'){
+        printf("Success\n");
+        printf("\nResult: String successfully Parsed & Accepted!\n");
+    }
+    else{
+        printf("Error\n");
+        printf("\nResult: Syntax Error. Input rejected.\n");
+    }
+
+    return 0;
+}
