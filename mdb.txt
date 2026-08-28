@@ -530,3 +530,799 @@ eid | ename | esal  | variant_ecity | variant_ephone
    3 | varun |  null |      Hyderbad |     9872643257
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================================================
+// EXERCISE 01: MONGODB QUERIES FOR BASIC AND AGGREGATION OPERATIONS
+// ============================================================
+
+// --- Database Creation & Selection ---
+> use Employee
+switched to db Employee
+
+> db
+Employee
+
+// --- Collection Creation ---
+> db.createCollection("EmpData")
+{ "ok" : 1 }
+
+> show collections
+EmpData
+
+// --- Inserting Documents ---
+> db.EmpData.insertMany([
+  { EmpNo: 1, Name: "Ajay", Department: "Admin", Salary: 15000 },
+  { EmpNo: 2, Name: "Raja", Department: "Clerk", Salary: 12000 },
+  { EmpNo: 3, Name: "John", Department: "System Analyst", Salary: 10000 },
+  { EmpNo: 4, Name: "Vijay", Department: "Accountant", Salary: 14000 },
+  { EmpNo: 5, Name: "Sanjay", Department: "Admin", Salary: 15000 },
+  { EmpNo: 6, Name: "Rathika", Department: "Manager", Salary: 13000 },
+  { EmpNo: 7, Name: "Nithya", Department: "Accountant", Salary: 15000 },
+  { EmpNo: 8, Name: "Ramesh", Department: "Clerk", Salary: 11000 },
+  { EmpNo: 9, Name: "Vijay", Department: "System Analyst", Salary: 13000 },
+  { EmpNo: 10, Name: "Kalai", Department: "Clerk", Salary: 10000 }
+])
+{
+  "acknowledged" : true,
+  "insertedIds" : [
+    ObjectId("64b1f1a1c1a2b3c4d5e6f701"),
+    ObjectId("64b1f1a1c1a2b3c4d5e6f702"),
+    ObjectId("64b1f1a1c1a2b3c4d5e6f703"),
+    ObjectId("64b1f1a1c1a2b3c4d5e6f704"),
+    ObjectId("64b1f1a1c1a2b3c4d5e6f705"),
+    ObjectId("64b1f1a1c1a2b3c4d5e6f706"),
+    ObjectId("64b1f1a1c1a2b3c4d5e6f707"),
+    ObjectId("64b1f1a1c1a2b3c4d5e6f708"),
+    ObjectId("64b1f1a1c1a2b3c4d5e6f709"),
+    ObjectId("64b1f1a1c1a2b3c4d5e6f70a")
+  ]
+}
+
+// --- Updating Documents ---
+> db.EmpData.updateOne({ EmpNo: 1 }, { $set: { Salary: 25000 } })
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+> db.EmpData.updateMany({ EmpNo: { $gte: 0 } }, { $set: { Salary: 25000 } })
+{ "acknowledged" : true, "matchedCount" : 10, "modifiedCount" : 9 }
+
+// --- Reading / Querying Documents ---
+> db.EmpData.find()
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f701"), "EmpNo" : 1, "Name" : "Ajay", "Department" : "Admin", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f702"), "EmpNo" : 2, "Name" : "Raja", "Department" : "Clerk", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f703"), "EmpNo" : 3, "Name" : "John", "Department" : "System Analyst", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f704"), "EmpNo" : 4, "Name" : "Vijay", "Department" : "Accountant", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f705"), "EmpNo" : 5, "Name" : "Sanjay", "Department" : "Admin", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f706"), "EmpNo" : 6, "Name" : "Rathika", "Department" : "Manager", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f707"), "EmpNo" : 7, "Name" : "Nithya", "Department" : "Accountant", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f708"), "EmpNo" : 8, "Name" : "Ramesh", "Department" : "Clerk", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f709"), "EmpNo" : 9, "Name" : "Vijay", "Department" : "System Analyst", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f70a"), "EmpNo" : 10, "Name" : "Kalai", "Department" : "Clerk", "Salary" : 25000 }
+
+> db.EmpData.findOne()
+{
+  "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f701"),
+  "EmpNo" : 1,
+  "Name" : "Ajay",
+  "Department" : "Admin",
+  "Salary" : 25000
+}
+
+> db.EmpData.find({ $and: [{ Name: "Ajay" }, { Salary: 15000 }] })
+// (No documents returned if salary was updated to 25000)
+
+> db.EmpData.find({ $or: [{ Name: "Raja" }, { Salary: 15000 }] })
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f702"), "EmpNo" : 2, "Name" : "Raja", "Department" : "Clerk", "Salary" : 25000 }
+
+> db.EmpData.find({ Salary: { $gt: 1000 } })
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f701"), "EmpNo" : 1, "Name" : "Ajay", "Department" : "Admin", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f702"), "EmpNo" : 2, "Name" : "Raja", "Department" : "Clerk", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f703"), "EmpNo" : 3, "Name" : "John", "Department" : "System Analyst", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f704"), "EmpNo" : 4, "Name" : "Vijay", "Department" : "Accountant", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f705"), "EmpNo" : 5, "Name" : "Sanjay", "Department" : "Admin", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f706"), "EmpNo" : 6, "Name" : "Rathika", "Department" : "Manager", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f707"), "EmpNo" : 7, "Name" : "Nithya", "Department" : "Accountant", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f708"), "EmpNo" : 8, "Name" : "Ramesh", "Department" : "Clerk", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f709"), "EmpNo" : 9, "Name" : "Vijay", "Department" : "System Analyst", "Salary" : 25000 }
+{ "_id" : ObjectId("64b1f1a1c1a2b3c4d5e6f70a"), "EmpNo" : 10, "Name" : "Kalai", "Department" : "Clerk", "Salary" : 25000 }
+
+> db.EmpData.find({ Salary: { $lt: 15000 } })
+// (Returns matched documents or empty if all salaries >= 15000)
+
+// --- Aggregation Operations ---
+> db.EmpData.aggregate([
+  { $group: { _id: "$Department", "Sum_Salary_Department_wise": { $sum: "$Salary" } } }
+])
+{ "_id" : "Manager", "Sum_Salary_Department_wise" : 25000 }
+{ "_id" : "System Analyst", "Sum_Salary_Department_wise" : 50000 }
+{ "_id" : "Clerk", "Sum_Salary_Department_wise" : 75000 }
+{ "_id" : "Admin", "Sum_Salary_Department_wise" : 50000 }
+{ "_id" : "Accountant", "Sum_Salary_Department_wise" : 50000 }
+
+> db.EmpData.aggregate([
+  { $group: { _id: "$Department", "Min_Salary_Department_wise": { $min: "$Salary" } } }
+])
+{ "_id" : "Manager", "Min_Salary_Department_wise" : 25000 }
+{ "_id" : "System Analyst", "Min_Salary_Department_wise" : 25000 }
+{ "_id" : "Clerk", "Min_Salary_Department_wise" : 25000 }
+{ "_id" : "Admin", "Min_Salary_Department_wise" : 25000 }
+{ "_id" : "Accountant", "Min_Salary_Department_wise" : 25000 }
+
+> db.EmpData.aggregate([
+  { $group: { _id: "$Department", "Max_Salary_Department_wise": { $max: "$Salary" } } }
+])
+{ "_id" : "Manager", "Max_Salary_Department_wise" : 25000 }
+{ "_id" : "System Analyst", "Max_Salary_Department_wise" : 25000 }
+{ "_id" : "Clerk", "Max_Salary_Department_wise" : 25000 }
+{ "_id" : "Admin", "Max_Salary_Department_wise" : 25000 }
+{ "_id" : "Accountant", "Max_Salary_Department_wise" : 25000 }
+
+> db.EmpData.aggregate([
+  { $group: { _id: "$Department", "Average_Salary_Department_wise": { $avg: "$Salary" } } }
+])
+{ "_id" : "Manager", "Average_Salary_Department_wise" : 25000 }
+{ "_id" : "System Analyst", "Average_Salary_Department_wise" : 25000 }
+{ "_id" : "Clerk", "Average_Salary_Department_wise" : 25000 }
+{ "_id" : "Admin", "Average_Salary_Department_wise" : 25000 }
+{ "_id" : "Accountant", "Average_Salary_Department_wise" : 25000 }
+
+> db.EmpData.aggregate([
+  { $group: { _id: "$Department", "First_Document": { $first: "$Name" } } }
+])
+{ "_id" : "Manager", "First_Document" : "Rathika" }
+{ "_id" : "System Analyst", "First_Document" : "John" }
+{ "_id" : "Clerk", "First_Document" : "Raja" }
+{ "_id" : "Admin", "First_Document" : "Ajay" }
+{ "_id" : "Accountant", "First_Document" : "Vijay" }
+
+> db.EmpData.aggregate([
+  { $group: { _id: "$Department", "Last_Document": { $last: "$Name" } } }
+])
+{ "_id" : "Manager", "Last_Document" : "Rathika" }
+{ "_id" : "System Analyst", "Last_Document" : "Vijay" }
+{ "_id" : "Clerk", "Last_Document" : "Kalai" }
+{ "_id" : "Admin", "Last_Document" : "Sanjay" }
+{ "_id" : "Accountant", "Last_Document" : "Nithya" }
+
+> db.EmpData.aggregate([
+  { $group: { _id: "$Department", "Name": { $push: "$Name" } } }
+])
+{ "_id" : "Manager", "Name" : [ "Rathika" ] }
+{ "_id" : "System Analyst", "Name" : [ "John", "Vijay" ] }
+{ "_id" : "Clerk", "Name" : [ "Raja", "Ramesh", "Kalai" ] }
+{ "_id" : "Admin", "Name" : [ "Ajay", "Sanjay" ] }
+{ "_id" : "Accountant", "Name" : [ "Vijay", "Nithya" ] }
+
+// --- Count, Remove & Drop Operations ---
+> db.EmpData.count()
+10
+
+> db.EmpData.remove({ Name: "Raja" })
+WriteResult({ "nRemoved" : 1 })
+
+> db.EmpData.remove({})
+WriteResult({ "nRemoved" : 9 })
+
+> db.EmpData.find()
+// (Empty result)
+
+> db.EmpData.count()
+0
+
+> db.EmpData.drop()
+true
+
+> show collections
+// (Empty result)
+
+> show dbs
+admin     0.000GB
+config    0.000GB
+local     0.000GB
+Employee  0.000GB
+
+> db.dropDatabase()
+{ "dropped" : "Employee", "ok" : 1 }
+
+> show dbs
+admin     0.000GB
+config    0.000GB
+local     0.000GB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================================================
+// EXERCISE 02: IMPLEMENTATION OF PRODUCT AND ADVANCED CRUD OPERATIONS USING MONGODB
+// ============================================================
+
+// --- Database Creation ---
+> use ProductCatalog
+switched to db ProductCatalog
+
+// --- Checking Currently Selected Database ---
+> db
+ProductCatalog
+
+// --- Collection Creation ---
+> db.createCollection("Products")
+{ "ok" : 1 }
+
+// --- Checking Created Collections ---
+> show collections
+Products
+
+// --- Inserting Product Documents (Batch 1: ProductID 101 to 105) ---
+> db.Products.insertMany([
+  {
+    ProductID: 101,
+    ProductName: "Laptop",
+    Brand: "Dell",
+    Category: "Electronics",
+    Price: 65000,
+    Stock: 25,
+    Rating: 4.7,
+    Supplier: { Name: "Tech World", City: "Chennai" },
+    Specifications: { RAM: "16GB", Storage: "512GB SSD", Processor: "Intel i7" },
+    Tags: ["Laptop", "Office", "Electronics"],
+    Available: true
+  },
+  {
+    ProductID: 102,
+    ProductName: "Smartphone",
+    Brand: "Samsung",
+    Category: "Electronics",
+    Price: 35000,
+    Stock: 40,
+    Rating: 4.6,
+    Supplier: { Name: "Mobile Zone", City: "Coimbatore" },
+    Specifications: { RAM: "8GB", Storage: "256GB", Processor: "Snapdragon" },
+    Tags: ["Android", "5G", "Mobile"],
+    Available: true
+  },
+  {
+    ProductID: 103,
+    ProductName: "Wireless Mouse",
+    Brand: "Logitech",
+    Category: "Accessories",
+    Price: 1200,
+    Stock: 80,
+    Rating: 4.4,
+    Supplier: { Name: "Computer Hub", City: "Madurai" },
+    Specifications: { Connectivity: "Bluetooth", Battery: "AA" },
+    Tags: ["Mouse", "Wireless"],
+    Available: true
+  },
+  {
+    ProductID: 104,
+    ProductName: "Keyboard",
+    Brand: "HP",
+    Category: "Accessories",
+    Price: 1800,
+    Stock: 35,
+    Rating: 4.2,
+    Supplier: { Name: "Computer Hub", City: "Madurai" },
+    Specifications: { Type: "Mechanical" },
+    Tags: ["Keyboard"],
+    Available: true
+  },
+  {
+    ProductID: 105,
+    ProductName: "Monitor",
+    Brand: "LG",
+    Category: "Electronics",
+    Price: 15000,
+    Stock: 20,
+    Rating: 4.5,
+    Supplier: { Name: "Vision Tech", City: "Salem" },
+    Specifications: { Size: "27 Inch", Resolution: "4K" },
+    Tags: ["Display", "Monitor"],
+    Available: false
+  }
+])
+{
+  "acknowledged" : true,
+  "insertedIds" : [
+    ObjectId("64b1f2a2c1a2b3c4d5e6f801"),
+    ObjectId("64b1f2a2c1a2b3c4d5e6f802"),
+    ObjectId("64b1f2a2c1a2b3c4d5e6f803"),
+    ObjectId("64b1f2a2c1a2b3c4d5e6f804"),
+    ObjectId("64b1f2a2c1a2b3c4d5e6f805")
+  ]
+}
+
+// --- Display All Products ---
+> db.Products.find()
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Brand" : "Dell", "Category" : "Electronics", "Price" : 65000, "Stock" : 25, "Rating" : 4.7, "Supplier" : { "Name" : "Tech World", "City" : "Chennai" }, "Specifications" : { "RAM" : "16GB", "Storage" : "512GB SSD", "Processor" : "Intel i7" }, "Tags" : [ "Laptop", "Office", "Electronics" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductID" : 102, "ProductName" : "Smartphone", "Brand" : "Samsung", "Category" : "Electronics", "Price" : 35000, "Stock" : 40, "Rating" : 4.6, "Supplier" : { "Name" : "Mobile Zone", "City" : "Coimbatore" }, "Specifications" : { "RAM" : "8GB", "Storage" : "256GB", "Processor" : "Snapdragon" }, "Tags" : [ "Android", "5G", "Mobile" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f803"), "ProductID" : 103, "ProductName" : "Wireless Mouse", "Brand" : "Logitech", "Category" : "Accessories", "Price" : 1200, "Stock" : 80, "Rating" : 4.4, "Supplier" : { "Name" : "Computer Hub", "City" : "Madurai" }, "Specifications" : { "Connectivity" : "Bluetooth", "Battery" : "AA" }, "Tags" : [ "Mouse", "Wireless" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f804"), "ProductID" : 104, "ProductName" : "Keyboard", "Brand" : "HP", "Category" : "Accessories", "Price" : 1800, "Stock" : 35, "Rating" : 4.2, "Supplier" : { "Name" : "Computer Hub", "City" : "Madurai" }, "Specifications" : { "Type" : "Mechanical" }, "Tags" : [ "Keyboard" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f805"), "ProductID" : 105, "ProductName" : "Monitor", "Brand" : "LG", "Category" : "Electronics", "Price" : 15000, "Stock" : 20, "Rating" : 4.5, "Supplier" : { "Name" : "Vision Tech", "City" : "Salem" }, "Specifications" : { "Size" : "27 Inch", "Resolution" : "4K" }, "Tags" : [ "Display", "Monitor" ], "Available" : false }
+
+// --- Display One Product ---
+> db.Products.findOne()
+{
+  "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"),
+  "ProductID" : 101,
+  "ProductName" : "Laptop",
+  "Brand" : "Dell",
+  "Category" : "Electronics",
+  "Price" : 65000,
+  "Stock" : 25,
+  "Rating" : 4.7,
+  "Supplier" : { "Name" : "Tech World", "City" : "Chennai" },
+  "Specifications" : { "RAM" : "16GB", "Storage" : "512GB SSD", "Processor" : "Intel i7" },
+  "Tags" : [ "Laptop", "Office", "Electronics" ],
+  "Available" : true
+}
+
+// --- CREATE OPERATIONS ---
+
+// Insert One Product (ProductID 106)
+> db.Products.insertOne({
+  ProductID: 106,
+  ProductName: "Printer",
+  Brand: "Canon",
+  Category: "Office",
+  Price: 12000,
+  Stock: 15,
+  Rating: 4.3,
+  Supplier: { Name: "Print Solutions", City: "Trichy" },
+  Specifications: { Type: "Laser" },
+  Tags: ["Printer"],
+  Available: true
+})
+{
+  "acknowledged" : true,
+  "insertedId" : ObjectId("64b1f2a2c1a2b3c4d5e6f806")
+}
+
+// Insert Multiple Products (ProductID 107, 108)
+> db.Products.insertMany([
+  {
+    ProductID: 107,
+    ProductName: "Tablet",
+    Brand: "Lenovo",
+    Category: "Electronics",
+    Price: 28000,
+    Stock: 18,
+    Rating: 4.4,
+    Supplier: { Name: "Digital World", City: "Erode" },
+    Tags: ["Tablet"],
+    Available: true
+  },
+  {
+    ProductID: 108,
+    ProductName: "Smartwatch",
+    Brand: "Noise",
+    Category: "Wearables",
+    Price: 4500,
+    Stock: 60,
+    Rating: 4.1,
+    Supplier: { Name: "Smart Hub", City: "Chennai" },
+    Tags: ["Watch", "Fitness"],
+    Available: true
+  }
+])
+{
+  "acknowledged" : true,
+  "insertedIds" : [
+    ObjectId("64b1f2a2c1a2b3c4d5e6f807"),
+    ObjectId("64b1f2a2c1a2b3c4d5e6f808")
+  ]
+}
+
+// --- READ OPERATIONS ---
+
+// Product Having Rating Greater than 4.5
+> db.Products.find({ Rating: { $gt: 4.5 } })
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Brand" : "Dell", "Category" : "Electronics", "Price" : 65000, "Stock" : 25, "Rating" : 4.7, "Supplier" : { "Name" : "Tech World", "City" : "Chennai" }, "Specifications" : { "RAM" : "16GB", "Storage" : "512GB SSD", "Processor" : "Intel i7" }, "Tags" : [ "Laptop", "Office", "Electronics" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductID" : 102, "ProductName" : "Smartphone", "Brand" : "Samsung", "Category" : "Electronics", "Price" : 35000, "Stock" : 40, "Rating" : 4.6, "Supplier" : { "Name" : "Mobile Zone", "City" : "Coimbatore" }, "Specifications" : { "RAM" : "8GB", "Storage" : "256GB", "Processor" : "Snapdragon" }, "Tags" : [ "Android", "5G", "Mobile" ], "Available" : true }
+
+// Product with Stock Less than 30
+> db.Products.find({ Stock: { $lt: 30 } })
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Brand" : "Dell", "Category" : "Electronics", "Price" : 65000, "Stock" : 25, "Rating" : 4.7, "Supplier" : { "Name" : "Tech World", "City" : "Chennai" }, "Specifications" : { "RAM" : "16GB", "Storage" : "512GB SSD", "Processor" : "Intel i7" }, "Tags" : [ "Laptop", "Office", "Electronics" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f805"), "ProductID" : 105, "ProductName" : "Monitor", "Brand" : "LG", "Category" : "Electronics", "Price" : 15000, "Stock" : 20, "Rating" : 4.5, "Supplier" : { "Name" : "Vision Tech", "City" : "Salem" }, "Specifications" : { "Size" : "27 Inch", "Resolution" : "4K" }, "Tags" : [ "Display", "Monitor" ], "Available" : false }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f806"), "ProductID" : 106, "ProductName" : "Printer", "Brand" : "Canon", "Category" : "Office", "Price" : 12000, "Stock" : 15, "Rating" : 4.3, "Supplier" : { "Name" : "Print Solutions", "City" : "Trichy" }, "Specifications" : { "Type" : "Laser" }, "Tags" : [ "Printer" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f807"), "ProductID" : 107, "ProductName" : "Tablet", "Brand" : "Lenovo", "Category" : "Electronics", "Price" : 28000, "Stock" : 18, "Rating" : 4.4, "Supplier" : { "Name" : "Digital World", "City" : "Erode" }, "Tags" : [ "Tablet" ], "Available" : true }
+
+// Product by Supplier City
+> db.Products.find({ "Supplier.City": "Madurai" })
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f803"), "ProductID" : 103, "ProductName" : "Wireless Mouse", "Brand" : "Logitech", "Category" : "Accessories", "Price" : 1200, "Stock" : 80, "Rating" : 4.4, "Supplier" : { "Name" : "Computer Hub", "City" : "Madurai" }, "Specifications" : { "Connectivity" : "Bluetooth", "Battery" : "AA" }, "Tags" : [ "Mouse", "Wireless" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f804"), "ProductID" : 104, "ProductName" : "Keyboard", "Brand" : "HP", "Category" : "Accessories", "Price" : 1800, "Stock" : 35, "Rating" : 4.2, "Supplier" : { "Name" : "Computer Hub", "City" : "Madurai" }, "Specifications" : { "Type" : "Mechanical" }, "Tags" : [ "Keyboard" ], "Available" : true }
+
+// Product Having Tag "Laptop"
+> db.Products.find({ Tags: "Laptop" })
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Brand" : "Dell", "Category" : "Electronics", "Price" : 65000, "Stock" : 25, "Rating" : 4.7, "Supplier" : { "Name" : "Tech World", "City" : "Chennai" }, "Specifications" : { "RAM" : "16GB", "Storage" : "512GB SSD", "Processor" : "Intel i7" }, "Tags" : [ "Laptop", "Office", "Electronics" ], "Available" : true }
+
+// Using AND Operator
+> db.Products.find({
+  $and: [
+    { Category: "Electronics" },
+    { Price: { $gt: 30000 } }
+  ]
+})
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Brand" : "Dell", "Category" : "Electronics", "Price" : 65000, "Stock" : 25, "Rating" : 4.7, "Supplier" : { "Name" : "Tech World", "City" : "Chennai" }, "Specifications" : { "RAM" : "16GB", "Storage" : "512GB SSD", "Processor" : "Intel i7" }, "Tags" : [ "Laptop", "Office", "Electronics" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductID" : 102, "ProductName" : "Smartphone", "Brand" : "Samsung", "Category" : "Electronics", "Price" : 35000, "Stock" : 40, "Rating" : 4.6, "Supplier" : { "Name" : "Mobile Zone", "City" : "Coimbatore" }, "Specifications" : { "RAM" : "8GB", "Storage" : "256GB", "Processor" : "Snapdragon" }, "Tags" : [ "Android", "5G", "Mobile" ], "Available" : true }
+
+// Using OR Operator
+> db.Products.find({
+  $or: [
+    { Brand: "Dell" },
+    { Brand: "LG" }
+  ]
+})
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Brand" : "Dell", "Category" : "Electronics", "Price" : 65000, "Stock" : 25, "Rating" : 4.7, "Supplier" : { "Name" : "Tech World", "City" : "Chennai" }, "Specifications" : { "RAM" : "16GB", "Storage" : "512GB SSD", "Processor" : "Intel i7" }, "Tags" : [ "Laptop", "Office", "Electronics" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f805"), "ProductID" : 105, "ProductName" : "Monitor", "Brand" : "LG", "Category" : "Electronics", "Price" : 15000, "Stock" : 20, "Rating" : 4.5, "Supplier" : { "Name" : "Vision Tech", "City" : "Salem" }, "Specifications" : { "Size" : "27 Inch", "Resolution" : "4K" }, "Tags" : [ "Display", "Monitor" ], "Available" : false }
+
+// Using NOT Operator
+> db.Products.find({
+  Price: {
+    $not: { $gt: 20000 }
+  }
+})
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f803"), "ProductID" : 103, "ProductName" : "Wireless Mouse", "Brand" : "Logitech", "Category" : "Accessories", "Price" : 1200, "Stock" : 80, "Rating" : 4.4, "Supplier" : { "Name" : "Computer Hub", "City" : "Madurai" }, "Specifications" : { "Connectivity" : "Bluetooth", "Battery" : "AA" }, "Tags" : [ "Mouse", "Wireless" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f804"), "ProductID" : 104, "ProductName" : "Keyboard", "Brand" : "HP", "Category" : "Accessories", "Price" : 1800, "Stock" : 35, "Rating" : 4.2, "Supplier" : { "Name" : "Computer Hub", "City" : "Madurai" }, "Specifications" : { "Type" : "Mechanical" }, "Tags" : [ "Keyboard" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f805"), "ProductID" : 105, "ProductName" : "Monitor", "Brand" : "LG", "Category" : "Electronics", "Price" : 15000, "Stock" : 20, "Rating" : 4.5, "Supplier" : { "Name" : "Vision Tech", "City" : "Salem" }, "Specifications" : { "Size" : "27 Inch", "Resolution" : "4K" }, "Tags" : [ "Display", "Monitor" ], "Available" : false }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f806"), "ProductID" : 106, "ProductName" : "Printer", "Brand" : "Canon", "Category" : "Office", "Price" : 12000, "Stock" : 15, "Rating" : 4.3, "Supplier" : { "Name" : "Print Solutions", "City" : "Trichy" }, "Specifications" : { "Type" : "Laser" }, "Tags" : [ "Printer" ], "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f808"), "ProductID" : 108, "ProductName" : "Smartwatch", "Brand" : "Noise", "Category" : "Wearables", "Price" : 4500, "Stock" : 60, "Rating" : 4.1, "Supplier" : { "Name" : "Smart Hub", "City" : "Chennai" }, "Tags" : [ "Watch", "Fitness" ], "Available" : true }
+
+// Sorting Price in Ascending Order
+> db.Products.find().sort({ Price: 1 })
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f803"), "ProductID" : 103, "ProductName" : "Wireless Mouse", "Price" : 1200 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f804"), "ProductID" : 104, "ProductName" : "Keyboard", "Price" : 1800 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f808"), "ProductID" : 108, "ProductName" : "Smartwatch", "Price" : 4500 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f806"), "ProductID" : 106, "ProductName" : "Printer", "Price" : 12000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f805"), "ProductID" : 105, "ProductName" : "Monitor", "Price" : 15000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f807"), "ProductID" : 107, "ProductName" : "Tablet", "Price" : 28000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductID" : 102, "ProductName" : "Smartphone", "Price" : 35000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Price" : 65000 }
+
+// Sorting Price in Descending Order
+> db.Products.find().sort({ Price: -1 })
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Price" : 65000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductID" : 102, "ProductName" : "Smartphone", "Price" : 35000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f807"), "ProductID" : 107, "ProductName" : "Tablet", "Price" : 28000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f805"), "ProductID" : 105, "ProductName" : "Monitor", "Price" : 15000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f806"), "ProductID" : 106, "ProductName" : "Printer", "Price" : 12000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f808"), "ProductID" : 108, "ProductName" : "Smartwatch", "Price" : 4500 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f804"), "ProductID" : 104, "ProductName" : "Keyboard", "Price" : 1800 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f803"), "ProductID" : 103, "ProductName" : "Wireless Mouse", "Price" : 1200 }
+
+// Top Three Expensive Products
+> db.Products.find().sort({ Price: -1 }).limit(3)
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Price" : 65000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductID" : 102, "ProductName" : "Smartphone", "Price" : 35000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f807"), "ProductID" : 107, "ProductName" : "Tablet", "Price" : 28000 }
+
+// Skip First Two Products
+> db.Products.find().skip(2)
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f803"), "ProductID" : 103, "ProductName" : "Wireless Mouse", "Brand" : "Logitech", "Price" : 1200 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f804"), "ProductID" : 104, "ProductName" : "Keyboard", "Brand" : "HP", "Price" : 1800 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f805"), "ProductID" : 105, "ProductName" : "Monitor", "Brand" : "LG", "Price" : 15000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f806"), "ProductID" : 106, "ProductName" : "Printer", "Brand" : "Canon", "Price" : 12000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f807"), "ProductID" : 107, "ProductName" : "Tablet", "Brand" : "Lenovo", "Price" : 28000 }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f808"), "ProductID" : 108, "ProductName" : "Smartwatch", "Brand" : "Noise", "Price" : 4500 }
+
+// --- UPDATE OPERATIONS ---
+
+// Update Single Product Price
+> db.Products.updateOne({ ProductID: 101 }, { $set: { Price: 70000 } })
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+// Update Stock
+> db.Products.updateOne({ ProductID: 102 }, { $set: { Stock: 55 } })
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+// Increase Price by ₹5000
+> db.Products.updateMany({ Category: "Electronics" }, { $inc: { Price: 5000 } })
+{ "acknowledged" : true, "matchedCount" : 4, "modifiedCount" : 4 }
+
+// Rename Brand
+> db.Products.updateMany({ Brand: "HP" }, { $set: { Brand: "HP India" } })
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+// Add New Tag
+> db.Products.updateOne({ ProductID: 101 }, { $push: { Tags: "Gaming" } })
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+// Add Multiple Tags
+> db.Products.updateOne({ ProductID: 102 }, { $push: { Tags: { $each: ["AMOLED", "Flagship"] } } })
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+// Remove a Tag
+> db.Products.updateOne({ ProductID: 102 }, { $pull: { Tags: "5G" } })
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+// Rename Field
+> db.Products.updateMany({}, { $rename: { Rating: "Customer Rating" } })
+{ "acknowledged" : true, "matchedCount" : 8, "modifiedCount" : 8 }
+
+// --- DELETE OPERATIONS ---
+
+// Delete One Product
+> db.Products.deleteOne({ ProductID: 108 })
+{ "acknowledged" : true, "deletedCount" : 1 }
+
+// Delete Multiple Products
+> db.Products.deleteMany({ Available: false })
+{ "acknowledged" : true, "deletedCount" : 1 }
+
+// Delete Products Having Stock Less than 20
+> db.Products.deleteMany({ Stock: { $lt: 20 } })
+{ "acknowledged" : true, "deletedCount" : 2 }
+
+// --- AGGREGATION OPERATIONS ---
+
+// Total Price Category Wise
+> db.Products.aggregate([
+  {
+    $group: {
+      _id: "$Category",
+      Total_Price: { $sum: "$Price" }
+    }
+  }
+])
+{ "_id" : "Accessories", "Total_Price" : 3000 }
+{ "_id" : "Electronics", "Total_Price" : 115000 }
+
+// Average Price Category Wise
+> db.Products.aggregate([
+  {
+    $group: {
+      _id: "$Category",
+      Average_Price: { $avg: "$Price" }
+    }
+  }
+])
+{ "_id" : "Accessories", "Average_Price" : 1500 }
+{ "_id" : "Electronics", "Average_Price" : 57500 }
+
+// Maximum Price Category Wise
+> db.Products.aggregate([
+  {
+    $group: {
+      _id: "$Category",
+      Maximum_Price: { $max: "$Price" }
+    }
+  }
+])
+{ "_id" : "Accessories", "Maximum_Price" : 1800 }
+{ "_id" : "Electronics", "Maximum_Price" : 75000 }
+
+// Minimum Price Category Wise
+> db.Products.aggregate([
+  {
+    $group: {
+      _id: "$Category",
+      Minimum_Price: { $min: "$Price" }
+    }
+  }
+])
+{ "_id" : "Accessories", "Minimum_Price" : 1200 }
+{ "_id" : "Electronics", "Minimum_Price" : 40000 }
+
+// Number of Products in Each Category
+> db.Products.aggregate([
+  {
+    $group: {
+      _id: "$Category",
+      NumberOfProducts: { $sum: 1 }
+    }
+  }
+])
+{ "_id" : "Accessories", "NumberOfProducts" : 2 }
+{ "_id" : "Electronics", "NumberOfProducts" : 2 }
+
+// Average Rating Brand Wise
+> db.Products.aggregate([
+  {
+    $group: {
+      _id: "$Brand",
+      AverageRating: { $avg: "$Customer Rating" }
+    }
+  }
+])
+{ "_id" : "HP India", "AverageRating" : 4.2 }
+{ "_id" : "Logitech", "AverageRating" : 4.4 }
+{ "_id" : "Samsung", "AverageRating" : 4.6 }
+{ "_id" : "Dell", "AverageRating" : 4.7 }
+
+// Total Stock Brand Wise
+> db.Products.aggregate([
+  {
+    $group: {
+      _id: "$Brand",
+      TotalStock: { $sum: "$Stock" }
+    }
+  }
+])
+{ "_id" : "HP India", "TotalStock" : 35 }
+{ "_id" : "Logitech", "TotalStock" : 80 }
+{ "_id" : "Samsung", "TotalStock" : 55 }
+{ "_id" : "Dell", "TotalStock" : 25 }
+
+// Product with Price Greater than 20,000 and Sort
+> db.Products.aggregate([
+  {
+    $match: {
+      Price: { $gt: 20000 }
+    }
+  },
+  {
+    $sort: {
+      Price: -1
+    }
+  }
+])
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Brand" : "Dell", "Category" : "Electronics", "Price" : 75000, "Stock" : 25, "Customer Rating" : 4.7, "Available" : true }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductID" : 102, "ProductName" : "Smartphone", "Brand" : "Samsung", "Category" : "Electronics", "Price" : 40000, "Stock" : 55, "Customer Rating" : 4.6, "Available" : true }
+
+// Project Required Fields
+> db.Products.aggregate([
+  {
+    $project: {
+      _id: 0,
+      ProductName: 1,
+      Brand: 1,
+      Price: 1,
+      Category: 1
+    }
+  }
+])
+{ "ProductName" : "Laptop", "Brand" : "Dell", "Category" : "Electronics", "Price" : 75000 }
+{ "ProductName" : "Smartphone", "Brand" : "Samsung", "Category" : "Electronics", "Price" : 40000 }
+{ "ProductName" : "Wireless Mouse", "Brand" : "Logitech", "Category" : "Accessories", "Price" : 1200 }
+{ "ProductName" : "Keyboard", "Brand" : "HP India", "Category" : "Accessories", "Price" : 1800 }
+
+// Group Products by Supplier City
+> db.Products.aggregate([
+  {
+    $group: {
+      _id: "$Supplier.City",
+      Products: { $push: "$ProductName" }
+    }
+  }
+])
+{ "_id" : "Madurai", "Products" : [ "Wireless Mouse", "Keyboard" ] }
+{ "_id" : "Coimbatore", "Products" : [ "Smartphone" ] }
+{ "_id" : "Chennai", "Products" : [ "Laptop" ] }
+
+// First Product in Each Category
+> db.Products.aggregate([
+  {
+    $group: {
+      _id: "$Category",
+      FirstProduct: { $first: "$ProductName" }
+    }
+  }
+])
+{ "_id" : "Accessories", "FirstProduct" : "Wireless Mouse" }
+{ "_id" : "Electronics", "FirstProduct" : "Laptop" }
+
+// Last Product in Each Category
+> db.Products.aggregate([
+  {
+    $group: {
+      _id: "$Category",
+      LastProduct: { $last: "$ProductName" }
+    }
+  }
+])
+{ "_id" : "Accessories", "LastProduct" : "Keyboard" }
+{ "_id" : "Electronics", "LastProduct" : "Smartphone" }
+
+// Highest Rated Product
+> db.Products.aggregate([
+  {
+    $sort: { "Customer Rating": -1 }
+  },
+  {
+    $limit: 1
+  }
+])
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductID" : 101, "ProductName" : "Laptop", "Brand" : "Dell", "Category" : "Electronics", "Price" : 75000, "Stock" : 25, "Customer Rating" : 4.7, "Available" : true }
+
+// Unwind Tags
+> db.Products.aggregate([
+  {
+    $unwind: "$Tags"
+  }
+])
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductName" : "Laptop", "Tags" : "Laptop" }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductName" : "Laptop", "Tags" : "Office" }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductName" : "Laptop", "Tags" : "Electronics" }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f801"), "ProductName" : "Laptop", "Tags" : "Gaming" }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductName" : "Smartphone", "Tags" : "Android" }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductName" : "Smartphone", "Tags" : "Mobile" }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductName" : "Smartphone", "Tags" : "AMOLED" }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f802"), "ProductName" : "Smartphone", "Tags" : "Flagship" }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f803"), "ProductName" : "Wireless Mouse", "Tags" : "Mouse" }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f803"), "ProductName" : "Wireless Mouse", "Tags" : "Wireless" }
+{ "_id" : ObjectId("64b1f2a2c1a2b3c4d5e6f804"), "ProductName" : "Keyboard", "Tags" : "Keyboard" }
+
+// Count Documents
+> db.Products.countDocuments()
+4
+
+// Estimate Document Count
+> db.Products.estimatedDocumentCount()
+4
+
+// Drop Collection
+> db.Products.drop()
+true
+
+// Verify Collection
+> show collections
+// (Empty result)
+
+// Drop Database
+> show dbs
+admin           0.000GB
+config          0.000GB
+local           0.000GB
+ProductCatalog  0.000GB
+
+> db.dropDatabase()
+{ "dropped" : "ProductCatalog", "ok" : 1 }
+
+> show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
