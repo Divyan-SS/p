@@ -1,0 +1,532 @@
+Program 3 : Sorting Indexing, and Filtering on a Real Time Employee Dataset using MongoDB
+
+1. CREATE DATABASE
+> use companydb
+switched to db companydb
+
+2. CREATE COLLECTIONS
+> db.createCollection("emp")
+{ "ok" : 1 }
+
+3. INSERT EMPLOYEE DATASET
+> db.emp3.insertMany([{eid:101,name:"arun",age:25,gender:'male',dept:'it',designation:'software engineer',salary:55000,experience:2,city:'cbe'},
+... {eid:102,name:"priya",age:25,gender:"female",dept:'it',designation:"manager",salary:60000,experience:6,city:'chennai'},
+... {eid:103,name:"karthick",age:29,gender:'male',dept:'finance',designation:'accountance',salary:61000,experience:5,city:'madurai'},
+... {eid:104,name:"keerthi",age:38,gender:"female",dept:'sales',designation:"sales manager",salary:88000,experience:8,city:'cbe'},
+... {eid:105,name:"ravi",age:27,gender:'male',dept:'developer',designation:'it',salary:58000,experience:5,city:'salem'},
+... {eid:106,name:"divya",age:30,gender:"female",dept:'it',designation:"system analyist",salary:69000,experience:12,city:'chennai'},
+... {eid:107,name:"suresh",age:41,gender:'male',dept:'finance',designation:'finance manager',salary:95000,experience:15,city:'bangalore'},
+... {eid:108,name:"anitha",age:26,gender:"female",dept:'marketing',designation:"executive manager",salary:48000,experience:2,city:'erode'},
+... {eid:109,name:"vijay",age:25,gender:'male',dept:'it',designation:'project manager',salary:110000,experience:10,city:'cbe'},
+... {eid:110,name:"soba",age:28,gender:"female",dept:'sales',designation:"sales executive",salary:52000,experience:4,city:'trichy'}])
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("6a4f6f4277b069376931384c"),
+                ObjectId("6a4f6f4277b069376931384d"),
+                ObjectId("6a4f6f4277b069376931384e"),
+                ObjectId("6a4f6f4277b069376931384f"),
+                ObjectId("6a4f6f4277b0693769313850"),
+                ObjectId("6a4f6f4277b0693769313851"),
+                ObjectId("6a4f6f4277b0693769313852"),
+                ObjectId("6a4f6f4277b0693769313853"),
+                ObjectId("6a4f6f4277b0693769313854"),
+                ObjectId("6a4f6f4277b0693769313855")
+        ]
+}
+
+4. DISPLAY  ALL EMPLOYEES
+> db.emp.find()
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b50"), "eid" : 103, "name" : "karthick", "age" : 29, "gender" : "male", "dept" : "finance", "designation" : "accountance", "salary" : 61000, "experience" : 5, "city" : "madurai" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b51"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b52"), "eid" : 105, "name" : "ravi", "age" : 27, "gender" : "male", "dept" : "developer", "designation" : "it", "salary" : 58000, "experience" : 5, "city" : "salem" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+
+5. SORT SALARY IN ASC ORDER
+> db.emp.find().sort({salary:1})
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b52"), "eid" : 105, "name" : "ravi", "age" : 27, "gender" : "male", "dept" : "developer", "designation" : "it", "salary" : 58000, "experience" : 5, "city" : "salem" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b50"), "eid" : 103, "name" : "karthick", "age" : 29, "gender" : "male", "dept" : "finance", "designation" : "accountance", "salary" : 61000, "experience" : 5, "city" : "madurai" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b51"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+
+6. SORT SALARY IN DES ORDER
+> db.emp.find().sort({salary:-1})
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b51"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b50"), "eid" : 103, "name" : "karthick", "age" : 29, "gender" : "male", "dept" : "finance", "designation" : "accountance", "salary" : 61000, "experience" : 5, "city" : "madurai" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b52"), "eid" : 105, "name" : "ravi", "age" : 27, "gender" : "male", "dept" : "developer", "designation" : "it", "salary" : 58000, "experience" : 5, "city" : "salem" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+
+7. SORT BY DEPT AND SALARY
+> db.emp.find().sort({dept:1,salary:-1})
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b52"), "eid" : 105, "name" : "ravi", "age" : 27, "gender" : "male", "dept" : "developer", "designation" : "it", "salary" : 58000, "experience" : 5, "city" : "salem" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b50"), "eid" : 103, "name" : "karthick", "age" : 29, "gender" : "male", "dept" : "finance", "designation" : "accountance", "salary" : 61000, "experience" : 5, "city" : "madurai" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b51"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+
+8. TOP FIVE HIGHEST PAID EMPLOYEES
+> db.emp.find().sort({salary:1}).limit(5)
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b52"), "eid" : 105, "name" : "ravi", "age" : 27, "gender" : "male", "dept" : "developer", "designation" : "it", "salary" : 58000, "experience" : 5, "city" : "salem" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+
+9. BOTTOM THREE SALARIES
+> db.emp.find().sort({salary:-1}).limit(3)
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b51"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+
+10. SKIP FIRST THREE RECORDS
+> db.emp.find().sort({salary:-1}).skip(3)
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b50"), "eid" : 103, "name" : "karthick", "age" : 29, "gender" : "male", "dept" : "finance", "designation" : "accountance", "salary" : 61000, "experience" : 5, "city" : "madurai" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b52"), "eid" : 105, "name" : "ravi", "age" : 27, "gender" : "male", "dept" : "developer", "designation" : "it", "salary" : 58000, "experience" : 5, "city" : "salem" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+
+11. EMPLOYEE WORKING IN IT DEPT
+> db.emp.find({dept:'it'})
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+
+12. SALARY BETWEEN THAT 60000 
+> db.emp.find({salary:{$gt:60000}})
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b50"), "eid" : 103, "name" : "karthick", "age" : 29, "gender" : "male", "dept" : "finance", "designation" : "accountance", "salary" : 61000, "experience" : 5, "city" : "madurai" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b51"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+
+13. SALARY BETWEEN 50000 AND 80000
+> db.emp.find({salary:{$gte:50000,$lte:80000}})
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b50"), "eid" : 103, "name" : "karthick", "age" : 29, "gender" : "male", "dept" : "finance", "designation" : "accountance", "salary" : 61000, "experience" : 5, "city" : "madurai" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b52"), "eid" : 105, "name" : "ravi", "age" : 27, "gender" : "male", "dept" : "developer", "designation" : "it", "salary" : 58000, "experience" : 5, "city" : "salem" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+
+14. EMPLOYEE AGE LESS THAT 28
+> db.emp.find({age:{$lte:28}})
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b52"), "eid" : 105, "name" : "ravi", "age" : 27, "gender" : "male", "dept" : "developer", "designation" : "it", "salary" : 58000, "experience" : 5, "city" : "salem" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+
+
+15. EMPLOYEE AGE GREATER THAN OR EQUAL TO 30
+> db.emp.find({age:{$gte:30}})
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b51"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+
+16. EMPLOYEE FROM ‘cbe’
+> db.emp.find({city:'cbe'})
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b51"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+
+17. EMPLOYEE FROM CHENNAI AND BANGALORE
+> db.emp.find({city:{$in:["chennai","bangalore"]}})
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+
+18.EMPLOYEE NOT FROM CBE
+> db.emp.find({city:{$ne:"cbe"}})
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b50"), "eid" : 103, "name" : "karthick", "age" : 29, "gender" : "male", "dept" : "finance", "designation" : "accountance", "salary" : 61000, "experience" : 5, "city" : "madurai" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b52"), "eid" : 105, "name" : "ravi", "age" : 27, "gender" : "male", "dept" : "developer", "designation" : "it", "salary" : 58000, "experience" : 5, "city" : "salem" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+
+19. IT EMPLOYEE WITH SALARY GREATER THEN 55000
+> db.emp.find({dept:"it",salary:{$gt:55000}})
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+
+20. FINANCE OR MANAGER
+> db.emp.find({$or:[{dept:"finance"},{dept:"mange"}]})
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b50"), "eid" : 103, "name" : "karthick", "age" : 29, "gender" : "male", "dept" : "finance", "designation" : "accountance", "salary" : 61000, "experience" : 5, "city" : "madurai" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+
+21. SALARY GREATER THAT 60000 AND EXPERIENCE GREATER THAT 5 YEAR
+> db.emp.find({$and:[{salary:{$gt:60000}},{experience:{$gt:5}}]})
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b51"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b56"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+
+22. EMPLOYEE NOT WORKING IN IT
+> db.emp.find({dept:{$ne:'it'}})
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b50"), "eid" : 103, "name" : "karthick", "age" : 29, "gender" : "male", "dept" : "finance", "designation" : "accountance", "salary" : 61000, "experience" : 5, "city" : "madurai" }
+{ "_id" : ObjectId("6a4f570fc33ad3013a094b51"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b52"), "eid" : 105, "name" : "ravi", "age" : 27, "gender" : "male", "dept" : "developer", "designation" : "it", "salary" : 58000, "experience" : 5, "city" : "salem" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b54"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+
+23. NAME STRATS WITH “^a”
+> db.emp.find({name:{$regex:'^a'}})
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4e"), "eid" : 101, "name" : "arun", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "software engineer", "salary" : 55000, "experience" : 2, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+
+24. NAME STRATS WITH “a$”
+> db.emp.find({name:{$regex:'a$'}})
+{ "_id" : ObjectId("6a4f5690c33ad3013a094b4f"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f57a6c33ad3013a094b53"), "eid" : 106, "name" : "divya", "age" : 30, "gender" : "female", "dept" : "it", "designation" : "system analyist", "salary" : 69000, "experience" : 12, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f5833c33ad3013a094b55"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+{ "_id" : ObjectId("6a4f58b5c33ad3013a094b57"), "eid" : 110, "name" : "soba", "age" : 28, "gender" : "female", "dept" : "sales", "designation" : "sales executive", "salary" : 52000, "experience" : 4, "city" : "trichy" }
+
+25. DISPLAY ONLY NAME, DEPT AND SALARY
+> db.emp.find({},{_id:0,name:1,dept:1,salary:1})
+{ "name" : "arun", "dept" : "it", "salary" : 55000 }
+{ "name" : "priya", "dept" : "it", "salary" : 60000 }
+{ "name" : "karthick", "dept" : "finance", "salary" : 61000 }
+{ "name" : "keerthi", "dept" : "sales", "salary" : 88000 }
+{ "name" : "ravi", "dept" : "developer", "salary" : 58000 }
+{ "name" : "divya", "dept" : "it", "salary" : 69000 }
+{ "name" : "suresh", "dept" : "finance", "salary" : 95000 }
+{ "name" : "anitha", "dept" : "marketing", "salary" : 48000 }
+{ "name" : "vijay", "dept" : "it", "salary" : 110000 }
+{ "name" : "soba", "dept" : "sales", "salary" : 52000 }
+
+26.DISTINCT DEPT
+> db.emp.distinct("dept")
+[ "developer", "finance", "it", "marketing", "sales" ]
+
+27. COUNT EMPLOYEE IN IT DEPT
+> db.emp.countDocuments({dept:'it'})
+4
+
+28. CREATE INDEX ON SALARY
+> db.emp.createIndex({salary:1})
+{
+        "numIndexesBefore" : 1,
+        "numIndexesAfter" : 2,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+
+29. CREATE COMPOUND INDEX
+> db.emp.createIndex({dept:1,salary:-1})
+{
+        "numIndexesBefore" : 2,
+        "numIndexesAfter" : 3,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+
+30. CREATE UNIQUE INDEX ON EID
+> db.emp.createIndex({eid:1},{unique:true})
+{
+        "numIndexesBefore" : 3,
+        "numIndexesAfter" : 4,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+
+31. CREATE TEXT INDEX
+> db.emp.createIndex({destination:"text"})
+{
+        "numIndexesBefore" : 4,
+        "numIndexesAfter" : 5,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+
+32. SEARCH TEXT INDEX
+> db.emp.find({$text:{$search:"manager"}})
+{ "_id" : ObjectId("6a4f61a17f00faa8edb53233"), "eid" : 102, "name" : "priya", "age" : 25, "gender" : "female", "dept" : "it", "designation" : "manager", "salary" : 60000, "experience" : 6, "city" : "chennai" }
+{ "_id" : ObjectId("6a4f61c07f00faa8edb5323a"), "eid" : 109, "name" : "vijay", "age" : 25, "gender" : "male", "dept" : "it", "designation" : "project manager", "salary" : 110000, "experience" : 10, "city" : "cbe" }
+{ "_id" : ObjectId("6a4f61b87f00faa8edb53239"), "eid" : 108, "name" : "anitha", "age" : 26, "gender" : "female", "dept" : "marketing", "designation" : "executive manager", "salary" : 48000, "experience" : 2, "city" : "erode" }
+{ "_id" : ObjectId("6a4f61b87f00faa8edb53238"), "eid" : 107, "name" : "suresh", "age" : 41, "gender" : "male", "dept" : "finance", "designation" : "finance manager", "salary" : 95000, "experience" : 15, "city" : "bangalore" }
+{ "_id" : ObjectId("6a4f61a97f00faa8edb53235"), "eid" : 104, "name" : "keerthi", "age" : 38, "gender" : "female", "dept" : "sales", "designation" : "sales manager", "salary" : 88000, "experience" : 8, "city" : "cbe" }
+
+33.VIEW ALL INDEXES
+> db.emp.getIndexes()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "_fts" : "text",
+                        "_ftsx" : 1
+                },
+                "name" : "designation_text",
+                "weights" : {
+                        "designation" : 1
+                },
+                "default_language" : "english",
+                "language_override" : "language",
+                "textIndexVersion" : 3
+        }
+]
+
+34. DROP ‘designation_text’ INDEX
+> db.emp.dropIndex("designation_text")
+{ "nIndexesWas" : 2, "ok" : 1 }
+
+35. EXPLAIN QUERY EXECUTION
+> db.emp.find({dept:"it",salary:{$gt:60000}}).explain("executionStats")
+{
+        "explainVersion" : "1",
+        "queryPlanner" : {
+                "namespace" : "test.emp",
+                "parsedQuery" : {
+                        "$and" : [
+                                {
+                                        "dept" : {
+                                                "$eq" : "it"
+                                        }
+                                },
+                                {
+                                        "salary" : {
+                                                "$gt" : 60000
+                                        }
+                                }
+                        ]
+                },
+                "indexFilterSet" : false,
+                "queryHash" : "DC8924FE",
+                "planCacheShapeHash" : "DC8924FE",
+                "planCacheKey" : "E215DD3E",
+                "optimizationTimeMillis" : 0,
+                "maxIndexedOrSolutionsReached" : false,
+                "maxIndexedAndSolutionsReached" : false,
+                "maxScansToExplodeReached" : false,
+                "prunedSimilarIndexes" : false,
+                "winningPlan" : {
+                        "isCached" : false,
+                        "stage" : "COLLSCAN",
+                        "filter" : {
+                                "$and" : [
+                                        {
+                                                "dept" : {
+                                                        "$eq" : "it"
+                                                }
+                                        },
+                                        {
+                                                "salary" : {
+                                                        "$gt" : 60000
+                                                }
+                                        }
+                                ]
+                        },
+                        "direction" : "forward"
+                },
+                "rejectedPlans" : [ ]
+        },
+        "executionStats" : {
+                "executionSuccess" : true,
+                "nReturned" : 2,
+                "executionTimeMillis" : 0,
+                "totalKeysExamined" : 0,
+                "totalDocsExamined" : 10,
+                "executionStages" : {
+                        "isCached" : false,
+                        "stage" : "COLLSCAN",
+                        "filter" : {
+                                "$and" : [
+                                        {
+                                                "dept" : {
+                                                        "$eq" : "it"
+                                                }
+                                        },
+                                        {
+                                                "salary" : {
+                                                        "$gt" : 60000
+                                                }
+                                        }
+                                ]
+                        },
+                        "nReturned" : 2,
+                        "executionTimeMillisEstimate" : 0,
+                        "works" : 11,
+                        "advanced" : 2,
+                        "needTime" : 8,
+                        "needYield" : 0,
+                        "saveState" : 0,
+                        "restoreState" : 0,
+                        "isEOF" : 1,
+                        "direction" : "forward",
+                        "docsExamined" : 10
+                }
+        },
+        "queryShapeHash" : "E1A563BB2B09C71E2FDC8843C8A4D875A0B743517BF52FA20C5F3DCF355A379B",
+        "command" : {
+                "find" : "emp",
+                "filter" : {
+                        "dept" : "it",
+                        "salary" : {
+                                "$gt" : 60000
+                        }
+                },
+                "$db" : "test"
+        },
+        "serverInfo" : {
+                "host" : "Economicslab-11",
+                "port" : 27017,
+                "version" : "8.0.13",
+                "gitVersion" : "8dc5cd2a30c4524132e2d44bb314544dc477e611"
+        },
+        "serverParameters" : {
+                "internalQueryFacetBufferSizeBytes" : 104857600,
+                "internalQueryFacetMaxOutputDocSizeBytes" : 104857600,
+                "internalLookupStageIntermediateDocumentMaxSizeBytes" : 104857600,
+                "internalDocumentSourceGroupMaxMemoryBytes" : 104857600,
+                "internalQueryMaxBlockingSortMemoryUsageBytes" : 104857600,
+                "internalQueryProhibitBlockingMergeOnMongoS" : 0,
+                "internalQueryMaxAddToSetBytes" : 104857600,
+                "internalDocumentSourceSetWindowFieldsMaxMemoryBytes" : 104857600,
+                "internalQueryFrameworkControl" : "trySbeRestricted",
+                "internalQueryPlannerIgnoreIndexWithCollationForRegex" : 1
+        },
+        "ok" : 1
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4. IMPLEMENTATION OF BASIC OPERATIONS IN CASSANDRA 
+
+-- 1. CREATE KEYSPACES
+CREATE KEYSPACE emp WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};
+
+
+-- 2. KEYSPACE VERIFICATION
+DESCRIBE keyspaces;
+system_auth  system  "OpsCenter"  emp  system_distributed  system_traces
+
+
+-- 3. SELECTION OF KEYSPACE
+USE emp;
+cqlsh:emp>
+
+
+-- 4. TABLE CREATION
+-- Note: 'variant' is not a valid Cassandra type. 
+-- To keep your terms exactly, 'variant' is used here as a column name with valid text/bigint types.
+CREATE TABLE emp (
+    eid int PRIMARY KEY,
+    ename text,
+    "variant_ecity" text, 
+    "variant_ephone" bigint,
+    esal int
+);
+-- 5. DATA INSERTION
+INSERT INTO emp(eid, ename, "variant_ecity", "variant_ephone", esal) VALUES (1, 'ram', 'Hyderbad', 9876543257, 50000);
+INSERT INTO emp(eid, ename, "variant_ecity", "variant_ephone", esal) VALUES (2, 'arun', 'Chennai', 98765437357, 90000);
+INSERT INTO emp(eid, ename, "variant_ecity", "variant_ephone", esal) VALUES (3, 'varun', 'Hyderbad', 9872643257, 80000);
+
+
+-- 6. READING DATA
+SELECT * FROM emp;
+ eid | ename | esal  | variant_ecity | variant_ephone
+-----+-------+-------+---------------+----------------
+   1 |   ram | 50000 |      Hyderbad |     9876543257
+   2 |  arun | 90000 |       Chennai |    98765437357
+   3 | varun | 80000 |      Hyderbad |     9872643257
+
+
+-- 7. READING DATA USING WHERE CLAUSE
+CREATE INDEX ON emp(esal);
+SELECT * FROM emp WHERE esal = 50000;
+eid | ename | esal  | variant_ecity | variant_ephone
+-----+-------+-------+---------------+----------------
+   1 |   ram | 50000 |      Hyderbad |     9876543257
+
+
+
+-- 8. UPDATION OPERATIONS
+UPDATE emp SET "variant_ecity" = 'Hyderbad', esal = 40000 WHERE eid = 3;
+
+
+-- 9. UPDATION VERIFICATION
+SELECT * FROM emp;
+eid | ename | esal  | variant_ecity | variant_ephone
+-----+-------+-------+---------------+----------------
+   1 |   ram | 50000 |      Hyderbad |     9876543257
+   2 |  arun | 90000 |       Chennai |    98765437357
+   3 | varun | 40000 |      Hyderbad |     9872643257
+
+
+-- 10. DELETION OPERATION
+DELETE esal FROM emp WHERE eid = 3;
+
+
+-- 11. DELETE VERIFICATION
+SELECT * FROM emp;
+eid | ename | esal  | variant_ecity | variant_ephone
+-----+-------+-------+---------------+----------------
+   1 |   ram | 50000 |      Hyderbad |     9876543257
+   2 |  arun | 90000 |       Chennai |    98765437357
+   3 | varun |  null |      Hyderbad |     9872643257
+
+
