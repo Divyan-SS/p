@@ -446,3 +446,313 @@ int main(){
 
     return 0;
 }
+
+
+
+
+
+
+6. Operator validator 
+
+#include <stdio.h>
+#include <string.h>
+void validateOperator(const char *op) {
+if (strlen(op) == 1) {
+switch (op[0]) {
+case '+': case '-': case '*': case '/': case '%':
+printf("'%s' is a valid Arithmetic Operator.\n", op);
+return;
+case '<': case '>':
+printf("'%s' is a valid Relational Operator.\n", op);
+return;
+case '=':
+printf("'%s' is a valid Assignment Operator.\n", op);
+return;
+case '!':
+printf("'%s' is a valid Logical Not Operator.\n", op);
+return;
+case '&': case '|': case '^': case '~':
+printf("'%s' is a valid Bitwise Operator.\n", op);
+return;
+case '?': case ':':
+printf("'%s' is a valid Conditional Ternary Operator.\n", op);
+return;
+}
+}
+if (strlen(op) == 2) {
+if (strcmp(op, "++") == 0 || strcmp(op, "--") == 0) {
+printf("'%s' is a valid Increment/Decrement Operator.\n", op);
+return;
+}
+if (strcmp(op, "==") == 0 || strcmp(op, "!=") == 0 ||
+strcmp(op, "<=") == 0 || strcmp(op, ">=") == 0) {
+printf("'%s' is a valid Relational Operator.\n", op);
+return;
+}
+if (strcmp(op, "&&") == 0 || strcmp(op, "||") == 0) {
+printf("'%s' is a valid Logical Operator.\n", op);
+return;
+}
+if (strcmp(op, "+=") == 0 || strcmp(op, "-=") == 0 ||
+strcmp(op, "*=") == 0 || strcmp(op, "/=") == 0 ||
+strcmp(op, "%=") == 0) {
+printf("'%s' is a valid Compound Assignment Operator.\n", op);
+return;
+}
+if (strcmp(op, "<<") == 0 || strcmp(op, ">>") == 0) {
+printf("'%s' is a valid Bitwise Shift Operator.\n", op);
+return;
+}
+}
+if (strlen(op) == 3) {
+if (strcmp(op, "<<=") == 0 || strcmp(op, ">>=") == 0) {
+printf("'%s' is a valid Compound Bitwise Shift Operator.\n", op);
+return;
+}
+}
+printf("'%s' is an INVALID Operator\n", op);
+}
+int main() {
+char input[10];
+printf("-- Lexical Analyser : Operator Validator --\n");
+printf("Enter a symbol to validate: ");
+if (scanf("%9s", input) == 1)
+validateOperator(input);
+return 0;
+}
+
+
+
+
+
+
+
+
+
+7. Shift Reduce parsing
+
+#include <stdio.h>
+#include <string.h>
+char stack[100], input[100];
+int top = -1, ip = 0;
+void displayStack()
+{
+int i;
+for (i = 0; i <= top; i++)
+printf("%c", stack[i]);
+}
+void reduce()
+{
+if (top >= 1 &&
+stack[top - 1] == 'i' &&
+stack[top] == 'd')
+{
+stack[top - 1] = 'E';
+top--;
+printf("Reduce: E -> id\n");
+return;
+}
+if (top >= 2 &&
+stack[top - 2] == '(' &&
+stack[top - 1] == 'E' &&
+stack[top] == ')')
+{
+top -= 2;
+stack[top] = 'E';
+printf("Reduce: E -> (E)\n");
+return;
+}
+if (top >= 2 &&
+stack[top - 2] == 'E' &&
+stack[top - 1] == '+' &&
+stack[top] == 'E')
+{
+top -= 2;
+stack[top] = 'E';
+printf("Reduce: E -> E+E\n");
+return;
+}
+if (top >= 2 &&
+stack[top - 2] == 'E' &&
+stack[top - 1] == '*' &&
+stack[top] == 'E')
+{
+top -= 2;
+stack[top] = 'E';
+printf("Reduce: E -> E*E\n");
+return;
+}
+}
+int main()
+{
+printf("SHIFT-REDUCE PARSER\n");
+printf("--------------------\n");
+printf("Grammar:\n");
+printf("E -> E+E\n");
+printf("E -> E*E\n");
+printf("E -> (E)\n");
+printf("E -> id\n\n");
+printf("Enter input string (use id for identifier): ");
+scanf("%s", input);
+printf("\n%-15s %-15s %-20s\n",
+"Stack", "Input", "Action");
+printf("-----------------------------------------------\n");
+while (input[ip] != '\0')
+{
+stack[++top] = input[ip++];
+printf("%-15s %-15s ",
+stack, input + ip);
+printf("Shift %c\n", stack[top]);
+reduce();
+}
+while (1)
+{
+int oldTop = top;
+reduce();
+if (oldTop == top)
+break;
+}
+printf("\nFinal Stack: ");
+displayStack();
+if (top == 0 && stack[0] == 'E')
+printf("\n\nInput string ACCEPTED.\n");
+else
+printf("\n\nInput string REJECTED.\n");
+return 0;
+}
+
+
+
+
+
+
+
+
+
+
+8. LALR parsing
+
+#include <stdio.h>
+#include <string.h>
+char stack[50];
+int top = -1;
+void push(char c) {
+stack[++top] = c;
+}
+void pop(int n) {
+top -= n;
+}
+int main() {
+char input[50];
+int i = 0;
+printf("Enter string (e.g., i+i*i): ");
+scanf("%s", input);
+push('$');
+while (input[i] != '\0') {
+if (input[i] == 'i') {
+push('F');
+printf("Shift i, Reduce F->i\n");
+stack[top] = 'T';
+printf("Reduce T->F\n");
+stack[top] = 'E';
+printf("Reduce E->T\n");
+}
+else if (input[i] == '+' || input[i] == '*') {
+push(input[i]);
+printf("Shift %c\n", input[i]);
+}
+else {
+printf("Rejected\n");
+return 0;
+}
+i++;
+}
+if (top >= 2 && stack[top] == 'E') {
+printf("Accepted by LALR Bottom-Up Parser\n");
+}
+else {
+printf("Rejected\n");
+}
+return 0;
+}
+
+
+
+
+
+
+
+
+9. SLR parsing
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+char input[20];
+int ip = 0;
+int main() {
+int stateStack[20];
+int top = 0;
+stateStack[top] = 0;
+printf("Enter input string: ");
+scanf("%s", input);
+strcat(input, "$");
+while (1) {
+int state = stateStack[top];
+char symbol = input[ip];
+switch (state) {
+case 0:
+if (symbol == 'c') {
+stateStack[++top] = 3;
+ip++;
+}
+else if (symbol == 'd') {
+stateStack[++top] = 4;
+ip++;
+}
+else {
+printf("Rejected\n");
+return 0;
+}
+break;
+case 1:
+if (symbol == '$') {
+printf("Accepted\n");
+return 0;
+}
+break;
+case 2:
+if (symbol == 'c') {
+stateStack[++top] = 3;
+ip++;
+}
+else if (symbol == 'd') {
+stateStack[++top] = 4;
+ip++;
+}
+else {
+printf("Rejected\n");
+return 0;
+}
+break;
+case 4:
+top--;
+state = stateStack[top];
+if (state == 0)
+stateStack[++top] = 2;
+else if (state == 2)
+stateStack[++top] = 5;
+break;
+case 5:
+printf("Accepted\n");
+return 0;
+default:
+printf("Rejected\n");
+return 0;
+}
+}
+}
+
+
+
+
